@@ -8,7 +8,8 @@ import { Image } from './image.model';
   providedIn: 'root'
 })
 export class ExploreService {
-  private readonly url: string = 'https://picsum.photos/';
+  private readonly url: string = 'https://picsum.photos';
+  private readonly infoUrl: string = 'https://picsum.photos/id';
   private defaultWidth: number = 1920;
   private defaultHeight: number = 1080;
 
@@ -18,22 +19,58 @@ export class ExploreService {
     return this.url;
   }
 
-  // getRandomImage(width: number = 1920, height: number = 1080, randomIndex: number): string {
-  //   return `${this.url}${width}/${height}?random=${randomIndex}`;
-  // }
+  getImage(width: number = 1920, height: number = 1080, id: number): string {
+    return `${this.url}/id/${id}/${width}/${height}`;
+  }
 
-  getRandomImage(width: number = 1920, height: number = 1080): Promise<any> {
-    return fetch(`${this.url}${width}/${height}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erreur HTTP, status = ' + response.status);
-        }
-        console.log(response.headers.get("picsum-id"));
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération de l\'image', error);
-        throw error;
-      });
+  async getRandomImage(width: number = 1920, height: number = 1080): Promise<string> {
+    try {
+      const response = await fetch(`${this.url}/${width}/${height}`);
+      if (!response.ok) {
+        throw new Error('Erreur HTTP, status = ' + response.status);
+      }
+      const picsumId = response.headers.get("picsum-id");
+      if (!picsumId) {
+        throw new Error('picsum-id header is missing');
+      }
+      return picsumId;
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'image', error);
+      throw error;
+    }
+  }
+
+  async getImageInfo(id: string, width: number = 1920, height: number = 1080): Promise<Image> {
+    try {
+      const response = await fetch(`${this.infoUrl}/${id}/info`);
+      if (!response.ok) {
+        throw new Error('Erreur HTTP, status = ' + response.status);
+      }
+      const imageInfo = await response.json();
+      return {
+        id: imageInfo.id,
+        author: imageInfo.author,
+        url: imageInfo.url,
+        download_url: `${this.url}/id/${id}/${width}/${height}`
+      };
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations de l\'image', error);
+      throw error;
+    }
+  }
+
+  async getRandomImages(count: number, width: number = 1920, height: number = 1080): Promise<Image[]> {
+    let images: Image[] = [];
+    for (let i = 0; i < count; i++) {
+      try {
+        const id = await this.getRandomImage();
+        const imageInfo = await this.getImageInfo(id, width, height);
+        images.push(imageInfo);
+      } catch (error) {
+        console.error(`Erreur lors de la récupération de l'image ${i}`, error);
+      }
+    }
+    return images;
   }
   // getRandomImages(count: number): string[] {
   //   let images: string[] = [];

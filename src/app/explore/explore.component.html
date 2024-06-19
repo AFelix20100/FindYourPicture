@@ -7,29 +7,40 @@
     <p>Discover random, never-before-seen images </p>
   </div><!-- End Section Title -->
 
-  <div class="container">
-    <div class="text-center mb-5" data-aos="zoom-out" data-aos-delay="100">
-      <!-- <button (click)="onReloadImages()" class="btn btn-get-started">Load New Images</button> -->
+  <div *ngIf="loading" class="loading-message" class="">
+    <div class="d-flex justify-content-center">
+      <div class="loader"></div>
     </div>
-    <!-- src/app/explore/explore.component.html -->
-    <div class="row">
-      <div class="col-lg-3 col-md-6 d-flex align-items-stretch" *ngFor="let image of images" data-aos="fade-up" data-aos-delay="100">
-        <div class="team-member">
-          <div class="member-img">
-            <img [src]="image" class="img-fluid" alt="">
-            <div class="social">
-              <a download="random-image.jpg" [attr.href]="image"><i class="bi bi-download"></i></a>
+  </div>
+  <div *ngIf="!loading">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="zoom-out" data-aos-delay="100">
+        <button (click)="loadImages()" class="btn btn-get-started">Load New Images</button>
+        <div class="row options mt-3">
+			<!-- <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedOption">
+				<label id="example-radio-group-label">Pick your favorite option</label><br>
+				<mat-radio-button value="1" class="mr-3">Option 1</mat-radio-button>
+				<mat-radio-button value="2">Option 2</mat-radio-button>
+			</mat-radio-group> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" *ngFor="let image of images" data-aos="fade-up"
+          data-aos-delay="100">
+          <div class="team-member">
+            <div class="member-img">
+              <img [src]="image.download_url" class="img-fluid" alt="">
+              <div class="social">
+                <a [attr.href]="image.download_url" target="_blank"><i class="bi bi-download"></i></a>
+              </div>
             </div>
-          </div>
-          <div class="member-info">
-            <h4>Image</h4>
-            <span>Image</span>
+            <div class="member-info">
+              <h4>{{image.author}}</h4>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-
   </div>
 
 </section><!-- /Team Section -->
