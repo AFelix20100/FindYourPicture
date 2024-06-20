@@ -17,11 +17,30 @@
       <div class="text-center mb-5" data-aos="zoom-out" data-aos-delay="100">
         <button (click)="loadImages()" class="btn btn-get-started">Load New Images</button>
         <div class="row options mt-3">
-			<!-- <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedOption">
-				<label id="example-radio-group-label">Pick your favorite option</label><br>
-				<mat-radio-button value="1" class="mr-3">Option 1</mat-radio-button>
-				<mat-radio-button value="2">Option 2</mat-radio-button>
-			</mat-radio-group> -->
+          <section class="example-section d-flex justify-content-center align-items-center">
+            <mat-checkbox class="example-margin mx-2" [checked]="isGrayScale" (change)="update($event.checked)">Black & White</mat-checkbox>
+            <form class="example-form">
+              <mat-form-field class="example-full-width mx-2">
+                <mat-label>Width in pixel</mat-label>
+                <input type="number" matInput placeholder="600" [(ngModel)]="defaultWidth" name="defaultWidth">
+              </mat-form-field>
+
+              <mat-form-field class="example-full-width mx-2">
+                <mat-label>Height in pixel</mat-label>
+                <input type="number" matInput placeholder="400" [(ngModel)]="defaultHeight" name="defaultHeight">
+              </mat-form-field>
+            </form>
+            <div class="d-flex flex-column align-items-center">
+              <mat-label>Blur level</mat-label>
+              <mat-slider [(ngModel)]="blurLevel" showTickMarks min="0" max="10" step="0.1" discrete thumbLabel ngDefaultControl >
+                <input matSliderThumb value="{{ blurLevel }}">
+              </mat-slider>
+            </div>
+            <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="selectedFormat">
+              <mat-button-toggle value=".jpg">JPG</mat-button-toggle>
+              <mat-button-toggle value=".webp">WEBP</mat-button-toggle>
+            </mat-button-toggle-group> -->
+          </section>
         </div>
       </div>
       <div class="row">
